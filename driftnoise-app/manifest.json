@@ -1,0 +1,14 @@
+{
+  "name": "Drift Noise",
+  "short_name": "Drift Noise",
+  "description": "An 18-minute seamless track engineered for deep, uninterrupted sleep.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#120E0C",
+  "theme_color": "#120E0C",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

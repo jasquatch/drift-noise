@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#120E0C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Drift Noise">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Drift Noise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,380&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-void:#120E0C;
+    --ember:#A8674B;
+    --ember-soft:#C88C6A;
+    --mist:#423C4A;
+    --text-soft:#8A8478;
+    --text-dim:#4A463E;
+    --line:#241F1B;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{
+    margin:0; padding:0; height:100%; width:100%;
+    background:var(--bg-void);
+    overflow:hidden;
+    font-family:'IBM Plex Sans', sans-serif;
+    color:var(--text-soft);
+    user-select:none;
+  }
+  .app{
+    height:100dvh; width:100vw;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:space-between;
+    padding: max(28px, env(safe-area-inset-top)) 24px max(28px, env(safe-area-inset-bottom));
+  }
+  header{
+    width:100%; text-align:left;
+  }
+  .wordmark{
+    font-family:'Fraunces', serif;
+    font-weight:300;
+    font-size:20px;
+    letter-spacing:0.06em;
+    color:var(--text-soft);
+    opacity:0.85;
+  }
+  .tagline{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin-top:4px;
+  }
+  .stage{
+    position:relative;
+    width:min(78vw, 340px);
+    height:min(78vw, 340px);
+    display:flex; align-items:center; justify-content:center;
+    flex:1;
+  }
+  .ring{
+    position:absolute;
+    border-radius:50%;
+    border:1px solid var(--mist);
+    opacity:0.5;
+  }
+  .ring1{ inset:0%;   animation: spin 83s linear infinite; }
+  .ring2{ inset:9%;   animation: spin 71s linear infinite reverse; }
+  .ring3{ inset:18%;  animation: spin 61s linear infinite; }
+  .ring4{ inset:27%;  animation: spin 53s linear infinite reverse; }
+  @keyframes spin{ from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  .ring::before{
+    content:'';
+    position:absolute; top:-1px; left:50%;
+    width:5px; height:5px; margin-left:-2.5px;
+    background:var(--mist);
+    border-radius:50%;
+  }
+  .core{
+    position:relative;
+    width:34%; height:34%;
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--ember-soft), var(--ember) 55%, #6b3f2c 100%);
+    box-shadow: 0 0 40px 4px rgba(168,103,75,0.25);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    animation: breathe 47s ease-in-out infinite;
+    border:none;
+  }
+  @keyframes breathe{
+    0%,100%{ transform:scale(1); box-shadow:0 0 40px 4px rgba(168,103,75,0.20); }
+    50%{ transform:scale(1.06); box-shadow:0 0 56px 10px rgba(168,103,75,0.34); }
+  }
+  .core svg{ width:28%; height:28%; fill:#1a1210; }
+  .core.playing .icon-play{ display:none; }
+  .core:not(.playing) .icon-pause{ display:none; }
+
+  .controls{
+    width:100%;
+    display:flex; flex-direction:column; gap:16px;
+    max-width:380px;
+  }
+  .row{ display:flex; align-items:center; justify-content:space-between; }
+  .timer-pill{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px; letter-spacing:0.06em;
+    color:var(--text-soft);
+    background:transparent;
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:8px 16px;
+    cursor:pointer;
+  }
+  .timer-pill:active{ border-color:var(--mist); }
+  .vol{
+    display:flex; align-items:center; gap:8px;
+  }
+  .vol-track{
+    position:relative;
+    width:120px; height:2px;
+    background:var(--line);
+    border-radius:2px;
+  }
+  .vol-fill{
+    position:absolute; left:0; top:0; height:100%;
+    background:var(--mist);
+    border-radius:2px;
+  }
+  .vol-handle{
+    position:absolute; top:50%; width:12px; height:12px;
+    margin-top:-6px; margin-left:-6px;
+    background:var(--ember-soft); border-radius:50%;
+  }
+  .status{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px; letter-spacing:0.1em;
+    color:var(--text-dim); text-align:center;
+    text-transform:uppercase;
+    min-height:14px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="wordmark">Drift Noise</div>
+    <div class="tagline">engineered for uninterrupted sleep</div>
+  </header>
+
+  <div class="stage">
+    <div class="ring ring1"></div>
+    <div class="ring ring2"></div>
+    <div class="ring ring3"></div>
+    <div class="ring ring4"></div>
+    <button class="core" id="playBtn" aria-label="Play or pause">
+      <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="icon-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+    </button>
+  </div>
+
+  <div class="controls">
+    <div class="status" id="status">tap the glow to begin</div>
+    <div class="row">
+      <button class="timer-pill" id="timerBtn">sleep timer: off</button>
+      <div class="vol">
+        <div class="vol-track" id="volTrack">
+          <div class="vol-fill" id="volFill"></div>
+          <div class="vol-handle" id="volHandle"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<audio id="audio" src="drift-noise.mp3" loop preload="auto"></audio>
+
+<script>
+  const audio = document.getElementById('audio');
+  const playBtn = document.getElementById('playBtn');
+  const status = document.getElementById('status');
+  const timerBtn = document.getElementById('timerBtn');
+  const volTrack = document.getElementById('volTrack');
+  const volFill = document.getElementById('volFill');
+  const volHandle = document.getElementById('volHandle');
+
+  let volume = 0.8;
+  let sleepTimer = null;
+  let sleepMinutes = null;
+  const timerOptions = [null, 30, 60, 120, 480];
+  let timerIdx = 0;
+
+  function setVolume(v){
+    volume = Math.max(0, Math.min(1, v));
+    audio.volume = volume;
+    volFill.style.width = (volume*100) + '%';
+    volHandle.style.left = (volume*100) + '%';
+  }
+  setVolume(0.8);
+
+  volTrack.addEventListener('click', (e) => {
+    const rect = volTrack.getBoundingClientRect();
+    setVolume((e.clientX - rect.left) / rect.width);
+  });
+
+  playBtn.addEventListener('click', async () => {
+    if (audio.paused){
+      try { await audio.play(); } catch(e){ status.textContent = 'tap again to allow audio'; return; }
+      playBtn.classList.add('playing');
+      status.textContent = 'playing · loops seamlessly';
+    } else {
+      audio.pause();
+      playBtn.classList.remove('playing');
+      status.textContent = 'paused';
+    }
+  });
+
+  timerBtn.addEventListener('click', () => {
+    timerIdx = (timerIdx + 1) % timerOptions.length;
+    sleepMinutes = timerOptions[timerIdx];
+    if (sleepTimer) clearTimeout(sleepTimer);
+    if (sleepMinutes){
+      timerBtn.textContent = 'sleep timer: ' + (sleepMinutes >= 60 ? (sleepMinutes/60)+'h' : sleepMinutes+'m');
+      sleepTimer = setTimeout(() => {
+        audio.pause();
+        playBtn.classList.remove('playing');
+        status.textContent = 'timer ended';
+      }, sleepMinutes * 60 * 1000);
+    } else {
+      timerBtn.textContent = 'sleep timer: off';
+    }
+  });
+
+  audio.addEventListener('ended', () => {
+    // loop attr handles seamless replay; this is just a safety net
+    if (!audio.loop) { audio.currentTime = 0; audio.play(); }
+  });
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(()=>{});
+    });
+  }
+</script>
+</body>
+</html>
